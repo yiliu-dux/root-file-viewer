@@ -1,9 +1,9 @@
 {
-  "name": "root-file-viewer",
-  "displayName": "ROOT File Viewer",
-  "description": "View ROOT files directly in VS Code!",
+  "name": "root-file-viewer-THn",
+  "displayName": "ROOT File Viewer THn",
+  "description": "View ROOT files directly in VS Code, with THn support!",
   "version": "1.7.0",
-  "publisher": "albertopdrf",
+  "publisher": "yiliu-dux",
   "engines": {
     "vscode": "^1.75.0"
   },
@@ -113,11 +113,11 @@
     "webpack-cli": "^4.10.0"
   },
   "bugs": {
-    "url": "https://github.com/albertopdrf/root-file-viewer/issues"
+    "url": "https://github.com/yiliu-dux/root-file-viewer/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/albertopdrf/root-file-viewer.git"
+    "url": "https://github.com/yiliu-dux/root-file-viewer.git"
   },
-  "homepage": "https://github.com/AlbertoPdRF/root-file-viewer#readme"
+  "homepage": "https://github.com/yiliu-dux/root-file-viewer#readme"
 }

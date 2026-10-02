@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [1.8.0] Forked - 2026-10-02
+
+- Add support for viewing THn and THnSparse histograms.
+- Fix latex rendering for 3D viewer (TH2 draw 3D, TH3, 3+D THn)
+
+
 ## [1.7.0] - 2026-05-08
 
 - Upgraded `JSROOT` to `v7.11.0`. The relevant changes of this update can be seen here:

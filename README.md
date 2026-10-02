@@ -1,4 +1,6 @@
-# ROOT File Viewer
+# ROOT File Viewer (Forked)
+
+This is a fork of the original [ROOT File Viewer](https://github.com/AlbertoPdRF/root-file-viewer). This fork adds support for viewing THn and THnSparse histograms, as well as fixes latex rendering for 3D viewer (TH2 draw 3D, TH3, 3+D THn).
 
 ROOT File Viewer allows you to see your ROOT Files directly in VS Code! This extension is for you if you want to view ROOT Files:
 
@@ -27,3 +29,21 @@ To build and run the extension locally, follow these steps:
 2. Move into just created folder folder with `cd root-file-viewer`
 3. Install the dependencies with `yarn`
 4. Run the extension pressing `F5`
+
+## Compiling locally
+```bash
+# First install nvm (Node Version Manager) https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.8/install.sh | bash
+
+# actually install Node.js
+nvm install 24
+
+# check that the correct version is being used
+node -v
+
+# get yarn from nvm
+corepack enable
+
+# actually compile
+npx @vscode/vsce package
+```

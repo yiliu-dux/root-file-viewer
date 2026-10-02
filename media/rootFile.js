@@ -4,6 +4,9 @@
   const jsroot = this.JSROOT;
   const dataset = document.getElementById("script").dataset;
 
+  this.rootFileViewerTHn.install(jsroot);
+  this.rootFileViewerLatex3D.install(jsroot);
+
   const settings = jsroot.settings;
   settings.DarkMode = dataset.darkMode === "true";
   settings.Palette = parseInt(dataset.palette);
