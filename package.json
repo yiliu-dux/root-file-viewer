@@ -2,7 +2,7 @@
   "name": "root-file-viewer-THn",
   "displayName": "ROOT File Viewer THn",
   "description": "View ROOT files directly in VS Code, with THn support!",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "publisher": "yiliu-dux",
   "engines": {
     "vscode": "^1.75.0"

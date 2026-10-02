@@ -48,5 +48,5 @@ corepack enable
 npx @vscode/vsce package
 
 # install the extension in VS Code
-code --install-extension root-file-viewer-THn-1.7.0.vsix
+code --install-extension root-file-viewer-THn-1.8.0.vsix
 ```
