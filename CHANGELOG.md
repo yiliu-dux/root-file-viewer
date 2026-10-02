@@ -18,6 +18,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - [`v7.11.1` changes](https://github.com/root-project/jsroot/releases/tag/7.11.1).
   - [`v7.11.2` changes](https://github.com/root-project/jsroot/releases/tag/7.11.2).
 
+### Fork-specific changes (THn)
+
+Custom changes on top of upstream, not part of upstream releases:
+
+- Add support for viewing THn and THnSparse histograms.
+- Fix latex rendering for 3D viewer (TH2 draw 3D, TH3, 3+D THn)
+
 ## [1.7.0] - 2026-05-08
 
 - Upgraded `JSROOT` to `v7.11.0`. The relevant changes of this update can be seen here:

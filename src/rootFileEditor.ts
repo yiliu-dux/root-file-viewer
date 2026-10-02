@@ -110,6 +110,12 @@ export class RootFileEditorProvider
     const scriptUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._context.extensionUri, "media", "rootFile.js")
     );
+    const thnScriptUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._context.extensionUri, "media", "thn.js")
+    );
+    const latex3dScriptUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._context.extensionUri, "media", "latex3d.js")
+    );
 
     const jsrootUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._context.extensionUri, "dist", "jsroot.js")
@@ -135,6 +141,8 @@ export class RootFileEditorProvider
         <link href="${styleMainUri}" rel="stylesheet" />
 
         <script src="${jsrootUri}"></script>
+        <script src="${thnScriptUri}"></script>
+        <script src="${latex3dScriptUri}"></script>
 
         <title>ROOT File</title>
       </head>
