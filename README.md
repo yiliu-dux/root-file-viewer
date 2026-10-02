@@ -44,6 +44,9 @@ node -v
 # get yarn from nvm
 corepack enable
 
-# actually compile
+# compile
 npx @vscode/vsce package
+
+# install the extension in VS Code
+code --install-extension root-file-viewer-THn-1.7.0.vsix
 ```
