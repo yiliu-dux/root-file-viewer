@@ -28,3 +28,7 @@ body {
   color: var(--vscode-button-background)!important;
   cursor: pointer!important;
 }
+
+.jsroot .h_item {
+  user-select: text!important;
+}
