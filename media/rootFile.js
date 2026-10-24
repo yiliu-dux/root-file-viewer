@@ -8,6 +8,30 @@
   this.rootFileViewerLatex3D.install(jsroot);
   this.rootFileViewerRebin.install(jsroot);
 
+  // projections of a 2D histogram use log y by default when log z is on
+  const canvasPrototype = jsroot.TCanvasPainter.prototype;
+  const drawInSidePanel = canvasPrototype.drawInSidePanel;
+  canvasPrototype.drawInSidePanel = function (canv, opt, kind) {
+    canv.fLogy = this.getRootPad().fLogz;
+    return drawInSidePanel.call(this, canv, opt, kind);
+  };
+
+  const th2Prototype = jsroot.TH2Painter.prototype;
+  const redraw = th2Prototype.redraw;
+  th2Prototype.redraw = function (reason) {
+    if (reason === "logz") {
+      const logz = this.getPadPainter().getRootPad().fLogz;
+      Object.values(this.getCanvPainter()?.proj_painter ?? {}).forEach((p) => {
+        const pad = p?.getRootPad?.();
+        if (pad) {
+          pad.fLogy = logz;
+          p.redrawPad();
+        }
+      });
+    }
+    return redraw.call(this, reason);
+  };
+
   const settings = jsroot.settings;
   settings.DarkMode = dataset.darkMode === "true";
   settings.Palette = parseInt(dataset.palette);
