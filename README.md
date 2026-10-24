@@ -1,6 +1,11 @@
 # ROOT File Viewer (Forked)
 
-This is a fork of the original [ROOT File Viewer](https://github.com/AlbertoPdRF/root-file-viewer). This fork adds support for viewing THn and THnSparse histograms, as well as fixes latex rendering for 3D viewer (TH2 draw 3D, TH3, 3+D THn).
+This is a fork of the original [ROOT File Viewer](https://github.com/AlbertoPdRF/root-file-viewer). This fork adds:
+- support for viewing THn and THnSparse histograms
+- fixes latex rendering for 3D viewer (TH2 draw 3D, TH3, 3+D THn).
+- option to copy path from each element in menu
+- selectable text in menu
+- rebin for 2D histograms
 
 ROOT File Viewer allows you to see your ROOT Files directly in VS Code! This extension is for you if you want to view ROOT Files:
 
@@ -32,21 +37,26 @@ To build and run the extension locally, follow these steps:
 
 ## Compiling locally
 ```bash
-# First install nvm (Node Version Manager) https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating
+# 1. Install nvm (Node Version Manager) https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.8/install.sh | bash
 
-# actually install Node.js
-nvm install 24
+# Restart your terminal or reload your shell configuration first if needed.
 
-# check that the correct version is being used
+# 2. Install and select Node.js
+nvm install 24
+nvm use 24
 node -v
 
-# get yarn from nvm
+# 3. Enable the package manager
 corepack enable
+yarn --version
 
-# compile
+# 4. Install dependencies declared by the project
+yarn install
+
+# 5. Package the extension
 npx @vscode/vsce package
 
-# install the extension in VS Code
-code --install-extension root-file-viewer-THn-1.7.1.vsix
+# 6. Install the generated VSIX
+code --install-extension ./root-file-viewer-THn-1.7.1.vsix
 ```

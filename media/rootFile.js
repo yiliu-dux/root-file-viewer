@@ -6,6 +6,7 @@
 
   this.rootFileViewerTHn.install(jsroot);
   this.rootFileViewerLatex3D.install(jsroot);
+  this.rootFileViewerRebin.install(jsroot);
 
   const settings = jsroot.settings;
   settings.DarkMode = dataset.darkMode === "true";
