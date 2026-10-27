@@ -2,7 +2,8 @@
 // covered too). Like JSROOT's 1D rebin, the drawn histogram is modified in
 // place, so repeated rebins stack and reopening the item starts from scratch.
 // For a 2D TEfficiency, rebinning and projections combine its passed and total
-// histograms instead of summing the drawn efficiencies.
+// histograms instead of summing the drawn efficiencies. Projections are drawn
+// with error bars.
 (() => {
   const factors = [2, 3, 4, 5, 10];
   const axisKeys = ["fNbins", "fXmax", "fXbins"];
@@ -41,6 +42,7 @@
         Object.assign(proj.fXaxis, pick(axis, axisKeys));
         proj.fNcells = axis.fNbins + 2;
         proj.fArray = new Array(proj.fNcells).fill(0);
+        proj.fSumw2 = [];
       }
     });
     painter.scanContent();
@@ -116,38 +118,56 @@
     redraw(painter);
   };
 
-  // JSROOT fills projections with sums of the drawn bins, so for TEfficiency
-  // they are refilled from the summed passed and total histograms. The bin
-  // range is not passed on to drawInSpecialArea, hence it is kept here.
-  const projectEfficiency = (painter, effPainter, proj) => {
+  // Sums f(bin) over the projected bins of the 2D histogram, for each bin of
+  // the projection. The bin range is not passed on to drawInSpecialArea, hence
+  // it is kept in redrawProjection.
+  const projectSums = (painter, proj, f) => {
     const [i1, i2, j1, j2] = painter.projectionRange;
+    const nx = painter.getHisto().fXaxis.fNbins + 2;
+    const isX = proj.fName === "xproj";
+    return Array.from({ length: proj.fXaxis.fNbins + 2 }, (_, k) => {
+      let sum = 0;
+      for (let l = isX ? j1 : i1; l < (isX ? j2 : i2); ++l) {
+        sum += f(isX ? k + nx * (l + 1) : l + 1 + nx * k);
+      }
+      return sum;
+    });
+  };
+
+  // JSROOT fills projections with sums of the drawn bins, so for TEfficiency
+  // they are refilled from the summed passed and total histograms
+  const projectEfficiency = (painter, effPainter, proj) => {
     const eff = effPainter.getObject();
     const { fTotalHistogram: total, fPassedHistogram: passed } = eff;
-    const nx = total.fXaxis.fNbins + 2;
-    const isX = proj.fName === "xproj";
-    const nbins = proj.fXaxis.fNbins + 2;
     const hasSumw2 = total.fSumw2?.length === total.fNcells;
-    const sums = { total: [], passed: [], sumw2: [] };
-    for (let k = 0; k < nbins; ++k) {
-      sums.total[k] = sums.passed[k] = sums.sumw2[k] = 0;
-      for (let l = isX ? j1 : i1; l < (isX ? j2 : i2); ++l) {
-        const bin = isX ? k + nx * (l + 1) : l + 1 + nx * k;
-        sums.total[k] += total.fArray[bin];
-        sums.passed[k] += passed.fArray[bin];
-        sums.sumw2[k] += hasSumw2 ? total.fSumw2[bin] : 0;
-      }
-    }
+    const sum = (array) => projectSums(painter, proj, (bin) => array[bin]);
 
     // Same statistics options as the TEfficiency; per-bin priors are dropped
     const projected = Object.create(eff);
     Object.assign(projected, {
-      fTotalHistogram: { fArray: sums.total, fSumw2: hasSumw2 && sums.sumw2 },
-      fPassedHistogram: { fArray: sums.passed },
+      fTotalHistogram: {
+        fArray: sum(total.fArray),
+        fSumw2: hasSumw2 && sum(total.fSumw2),
+      },
+      fPassedHistogram: { fArray: sum(passed.fArray) },
     });
     projected.fBeta_bin_params = [];
-    proj.fArray = sums.total.map((_, k) =>
+    proj.fArray = projected.fTotalHistogram.fArray.map((_, k) =>
       effPainter.getEfficiency(projected, k)
     );
+
+    // Asymmetric errors as for a 1D TEfficiency, see getBinErrors below.
+    // Empty bins get none, so they are not drawn.
+    proj.binErrors = proj.fArray.map((value, k) =>
+      projected.fTotalHistogram.fArray[k]
+        ? {
+            low: effPainter.getEfficiencyErrorLow(projected, k, value),
+            up: effPainter.getEfficiencyErrorUp(projected, k, value),
+          }
+        : { low: 0, up: 0 }
+    );
+    // Only used by JSROOT to decide that error bars are drawn
+    proj.fSumw2 = proj.binErrors.map(({ low, up }) => ((low + up) / 2) ** 2);
   };
 
   const install = (jsroot) => {
@@ -171,8 +191,22 @@
       const effPainter = getEfficiency(this);
       if (effPainter && this.projectionRange) {
         projectEfficiency(this, effPainter, obj);
+      } else if (this.projectionRange) {
+        // Errors add in quadrature, as in TH2::ProjectionX
+        const histo = this.getHisto();
+        const err2 = (bin) => histo.getBinError(bin) ** 2;
+        obj.fSumw2 = projectSums(this, obj, err2);
       }
       return drawInSpecialArea.call(this, obj, opt, kind);
+    };
+
+    // Lets a projection carry asymmetric errors (TH1 has no such field)
+    const th1Prototype = jsroot.TH1Painter.prototype;
+    const getBinErrors = th1Prototype.getBinErrors;
+    th1Prototype.getBinErrors = function (histo, bin, content) {
+      return (
+        histo.binErrors?.[bin] ?? getBinErrors.call(this, histo, bin, content)
+      );
     };
 
     const fillHistContextMenu = prototype.fillHistContextMenu;
