@@ -5,12 +5,18 @@ This is a fork of the original [ROOT File Viewer](https://github.com/AlbertoPdRF
 - fixes latex rendering for 3D viewer (TH2 draw 3D, TH3, 3+D THn).
 - option to copy path from each element in menu
 - selectable text in menu
-- rebin for 2D histograms
+- rebin for 2D histograms (also for 2D `TEfficiency`: passed and total histograms are combined rather than averaging the drawn efficiencies)
+- projections of 2D histograms are drawn with error bars (asymmetric for `TEfficiency`)
+- projections use log y by default when log z is enabled
 
 ROOT File Viewer allows you to see your ROOT Files directly in VS Code! This extension is for you if you want to view ROOT Files:
-
 - with just a click, without having to type anything on a terminal
 - anywhere, with no local ROOT installation required
+
+Fixes:
+- Fix 2D histogram XYall projection behaving like XY1
+- Fix `TEfficiency` bin combination in rebin and projections
+- Fix real 0 cells of a 2D `TEfficiency` (total > 0) being drawn as empty instead of with the lowest color
 
 ![Demo GIF](demo.gif)
 

@@ -32,6 +32,19 @@
     return redraw.call(this, reason);
   };
 
+  // real 0 cells of a TEfficiency (total > 0) get the lowest color: a nonzero
+  // sumw2 stops JSROOT from skipping them as empty bins
+  const drawBinsColor = th2Prototype.drawBinsColor;
+  th2Prototype.drawBinsColor = function () {
+    const eff = this.getPrimary()?.getObject();
+    if (eff?._typename === "TEfficiency") {
+      this.getHisto().fSumw2 = Array.from(eff.fTotalHistogram.fArray, (t) =>
+        t > 0 ? 1 : 0
+      );
+    }
+    return drawBinsColor.call(this);
+  };
+
   const settings = jsroot.settings;
   settings.DarkMode = dataset.darkMode === "true";
   settings.Palette = parseInt(dataset.palette);

@@ -186,6 +186,15 @@
       return redrawProjection.call(this, i1, i2, j1, j2);
     };
 
+    // JSROOT parses the width of "XYall" as NaN and falls back to 1
+    const toggleProjection = prototype.toggleProjection;
+    prototype.toggleProjection = function (kind, width) {
+      if (/^XYall$/i.test(kind)) {
+        kind = "Xall_Yall";
+      }
+      return toggleProjection.call(this, kind, width);
+    };
+
     const drawInSpecialArea = prototype.drawInSpecialArea;
     prototype.drawInSpecialArea = function (obj, opt, kind) {
       const effPainter = getEfficiency(this);
